@@ -1,0 +1,23 @@
+language: java
+jdk:
+  - oraclejdk21
+before_install:
+  - sudo apt-get update
+  - cd app/
+  - echo "Lets start maven package"
+  - mvn clean package
+  - cd ..
+script:
+  - docker-compose build
+before_deploy:
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+
+deploy:
+  provider: script
+  script:
+    docker push lucasemanoel/docker-from-zero-to-mastery-java;
+  on:
+    branch: master
+
+notifications:
+  email: false
